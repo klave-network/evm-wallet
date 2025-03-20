@@ -5,10 +5,10 @@
   ],
   "applications": [
     {
-      "name": "rust-template",
-      "description": "A Rust component template for Klave",
+      "name": "rust-wallet",
+      "description": "A Rust MultiChain Wallet for Klave",
       "version": "0.1.0",
-      "rootDir": "/apps/rust-template"
+      "rootDir": "/apps/rust-wallet"
     }
   ]
 }
