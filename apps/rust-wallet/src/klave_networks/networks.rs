@@ -1,9 +1,9 @@
 use std::fmt::{self, Display, Formatter};
-use crate::network::NETWORK_MANAGER_TABLE;
+use super::network::NETWORK_MANAGER_TABLE;
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
-use crate::network::Network;
-use crate::network::Credentials;
+use super::network::Network;
+use super::network::Credentials;
 use klave;
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
@@ -104,6 +104,7 @@ impl Networks {
         &self.networks
     }
 
+    #[allow(dead_code)]
     pub fn update_network(&self, network: &Network) -> Result<(), Box<dyn std::error::Error>> {
         let network_name = network.get_name();
         for n in &self.networks {
@@ -125,6 +126,7 @@ impl Networks {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn set_credentials(&self, network_name: &str, credentials: &Credentials) -> Result<(), Box<dyn std::error::Error>> {
         let mut network = self.get_network(network_name)?;
         network.set_credentials(credentials);

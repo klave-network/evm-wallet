@@ -1,5 +1,7 @@
 #[allow(warnings)]
 mod bindings;
+mod wallet;
+mod klave_networks;
 
 use std::str::FromStr;
 
@@ -9,10 +11,9 @@ use alloy_rpc_types_eth::AccessList;
 use bindings::Guest;
 use klave;
 use serde_json::Value;
-use klave_networks::{networks::Networks, network::Network};
 use wallet::Wallet;
+use klave_networks::{networks::Networks, network::Network};
 
-pub mod wallet;
 
 /// Custom function to use the import for random byte generation.
 ///

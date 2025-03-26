@@ -1,7 +1,6 @@
 [workspace]
 members = [
-    "apps/rust-wallet",
-    "crates/klave-networks"
+    "apps/rust-wallet"
 ]
 resolver = "2"
 

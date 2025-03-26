@@ -1,7 +1,7 @@
 use std::fmt::{self, Display, Formatter};
 use ::http::Request;
 use serde::{Deserialize, Serialize};
-use crate::http;
+use super::http;
 
 pub(crate) const NETWORK_MANAGER_TABLE: &str = "networkManagerTable";
 

@@ -9,7 +9,7 @@ use serde_json::to_string;
 use alloy_consensus::transaction::RlpEcdsaTx;
 use alloy_primitives::{hex, keccak256, Address, U256};
 use klave::{self, crypto::subtle::{self, CryptoKey}};
-use klave_networks::networks::Networks;
+use super::klave_networks::networks::Networks;
 
 pub(crate) const WALLET_TABLE: &str = "walletTable";
 
@@ -219,6 +219,7 @@ impl Wallet {
         balance >= value
     }
 
+    #[allow(dead_code)]
     pub fn sign(&mut self,   
         mut transaction: TxEip1559
     ) -> Result<String, Box<dyn std::error::Error>> {
