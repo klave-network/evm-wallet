@@ -5,10 +5,10 @@
   ],
   "applications": [
     {
-      "name": "rust-wallet",
-      "description": "A Rust MultiChain Wallet for Klave",
+      "name": "evm-wallet",
+      "description": "EVM-compatible multi-chain wallet for Klave",
       "version": "0.1.0",
-      "rootDir": "/apps/rust-wallet"
+      "rootDir": "/apps/evm-wallet"
     }
   ]
 }

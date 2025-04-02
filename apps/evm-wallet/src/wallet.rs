@@ -239,7 +239,8 @@ impl Wallet {
     pub fn sign_and_send(&mut self,   
         nm: &Networks,   
         network_name: &str,
-        mut transaction: TxEip1559        
+        mut transaction: TxEip1559,
+        trace: bool
     ) -> Result<String, Box<dyn std::error::Error>> {
 
         // Instantiate a signer.
@@ -252,7 +253,10 @@ impl Wallet {
         transaction.eip2718_encode(&signature, &mut encoded_tx);
         let rlp_hex = format!("\"{}\"", hex::encode_prefixed(encoded_tx));
 
-        let result = nm.send(network_name, &"eth_sendRawTransaction", &[&rlp_hex])?;
+        let result = nm.send(network_name, match trace {
+            true => &"trace_rawTransaction",
+            false => &"eth_sendRawTransaction"
+        }, &[&rlp_hex])?;
         Ok(result)
     }
 }

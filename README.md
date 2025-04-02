@@ -17,7 +17,7 @@ To use and build this template the following tools must be installed:
 ## Wasm component
 Klave apps are `wasm component`.
 In this template, three methods are implemented, registered and exposed: 
-You can see these methods exposed in the `wit` [interface](https://github.com/klave-network/rust-wallet/blob/master/apps/rust-wallet/wit/world.wit):
+You can see these methods exposed in the `wit` [interface](https://github.com/klave-network/evm-wallet/blob/master/apps/evm-wallet/wit/world.wit):
 - `export register-routes: func();`
 - `export export network-add: func(cmd: string);`
 - `export network-set-chain-id: func(cmd: string);`
@@ -42,7 +42,7 @@ A local crate is available to handle all network features needed:
 Are currently supported public and private ethereum-based blockchains.
 
 ## solidity contracts
-The CrossChainToken.sol contract is only available as an example of contract that is deployed and called as part of the rust-wallet.
+The CrossChainToken.sol contract is only available as an example of contract that is deployed and called as part of the evm-wallet.
 In the background, Hardhat was used to test the contract and the bytecode was generated using the typescript solc.compile command.
 In this particular example, only mint and burn methods can be called.
 

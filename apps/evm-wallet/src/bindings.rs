@@ -128,7 +128,7 @@ pub trait Guest {
     fn wallet_call_contract(cmd: _rt::String);
 }
 #[doc(hidden)]
-macro_rules! __export_world_rust_wallet_cabi {
+macro_rules! __export_world_evm_wallet_cabi {
     ($ty:ident with_types_in $($path_to_types:tt)*) => {
         const _ : () = { #[export_name = "register-routes"] unsafe extern "C" fn
         export_register_routes() { $($path_to_types)*::
@@ -170,7 +170,7 @@ macro_rules! __export_world_rust_wallet_cabi {
     };
 }
 #[doc(hidden)]
-pub(crate) use __export_world_rust_wallet_cabi;
+pub(crate) use __export_world_evm_wallet_cabi;
 #[rustfmt::skip]
 mod _rt {
     #[cfg(target_arch = "wasm32")]
@@ -206,31 +206,31 @@ mod _rt {
 /// ```
 #[allow(unused_macros)]
 #[doc(hidden)]
-macro_rules! __export_rust_wallet_impl {
+macro_rules! __export_evm_wallet_impl {
     ($ty:ident) => {
         self::export!($ty with_types_in self);
     };
     ($ty:ident with_types_in $($path_to_types_root:tt)*) => {
-        $($path_to_types_root)*:: __export_world_rust_wallet_cabi!($ty with_types_in
+        $($path_to_types_root)*:: __export_world_evm_wallet_cabi!($ty with_types_in
         $($path_to_types_root)*);
     };
 }
 #[doc(inline)]
-pub(crate) use __export_rust_wallet_impl as export;
+pub(crate) use __export_evm_wallet_impl as export;
 #[cfg(target_arch = "wasm32")]
-#[link_section = "component-type:wit-bindgen:0.36.0:component:rust-wallet:rust-wallet:encoded world"]
+#[link_section = "component-type:wit-bindgen:0.36.0:component:evm-wallet:evm-wallet:encoded world"]
 #[doc(hidden)]
-pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 483] = *b"\
-\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xe1\x02\x01A\x02\x01\
+pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 480] = *b"\
+\0asm\x0d\0\x01\0\0\x19\x16wit-component-encoding\x04\0\x07\xdf\x02\x01A\x02\x01\
 A\x10\x01@\0\x01\0\x04\0\x0fregister-routes\x01\0\x01@\x01\x03cmds\x01\0\x04\0\x0b\
 network-add\x01\x01\x04\0\x14network-set-chain-id\x01\x01\x04\0\x15network-set-g\
 as-price\x01\x01\x04\0\x0cnetworks-all\x01\x01\x04\0\x0awallet-add\x01\x01\x04\0\
 \x12wallet-add-network\x01\x01\x04\0\x0ewallet-address\x01\x01\x04\0\x11wallet-p\
 ublic-key\x01\x01\x04\0\x0ewallet-balance\x01\x01\x04\0\x0fwallet-networks\x01\x01\
 \x04\0\x0fwallet-transfer\x01\x01\x04\0\x16wallet-deploy-contract\x01\x01\x04\0\x14\
-wallet-call-contract\x01\x01\x04\0!component:rust-wallet/rust-wallet\x04\0\x0b\x11\
-\x01\0\x0brust-wallet\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-com\
-ponent\x070.220.1\x10wit-bindgen-rust\x060.36.0";
+wallet-call-contract\x01\x01\x04\0\x1fcomponent:evm-wallet/evm-wallet\x04\0\x0b\x10\
+\x01\0\x0aevm-wallet\x03\0\0\0G\x09producers\x01\x0cprocessed-by\x02\x0dwit-comp\
+onent\x070.220.1\x10wit-bindgen-rust\x060.36.0";
 #[inline(never)]
 #[doc(hidden)]
 pub fn __link_custom_section_describing_imports() {

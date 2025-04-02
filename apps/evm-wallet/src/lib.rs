@@ -2,6 +2,7 @@
 mod bindings;
 mod wallet;
 mod klave_networks;
+mod solidity;
 
 use std::str::FromStr;
 
@@ -13,6 +14,8 @@ use klave;
 use serde_json::Value;
 use wallet::Wallet;
 use klave_networks::{networks::Networks, network::Network};
+use solidity::{burnCall, mintCall};
+use alloy_sol_types::SolCall;
 
 
 /// Custom function to use the import for random byte generation.
@@ -455,11 +458,19 @@ impl Guest for Component {
             }
         };
 
+        let trace = match v["trace"].as_bool() {
+            Some(c) => c,
+            None => {
+                klave::notifier::send_string(&format!("ERROR: trace not found"));
+                return;
+            }
+        };
+
         if !tx.value.is_zero() && !wallet.can_spend(&nm, network_name, tx.value) {
             return klave::notifier::send_string("ERROR: Insufficient balance");
         }
 
-        match wallet.sign_and_send(&nm, network_name, tx) {
+        match wallet.sign_and_send(&nm, network_name, tx, trace) {
             Ok(result) => klave::notifier::send_string(&result),
             Err(e) => klave::notifier::send_string(&format!("ERROR: failed to send transaction: {}", e))
         }
@@ -557,7 +568,15 @@ impl Guest for Component {
             }
         };
 
-        match wallet.sign_and_send(&nm, network_name, tx) {
+        let trace = match v["trace"].as_bool() {
+            Some(c) => c,
+            None => {
+                klave::notifier::send_string(&format!("ERROR: trace not found"));
+                return;
+            }
+        };
+
+        match wallet.sign_and_send(&nm, network_name, tx, trace) {
             Ok(result) => klave::notifier::send_string(&result),
             Err(e) => klave::notifier::send_string(&format!("ERROR: failed to send transaction: {}", e))
         }

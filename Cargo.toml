@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "apps/rust-wallet"
+    "apps/evm-wallet"
 ]
 resolver = "2"
 
