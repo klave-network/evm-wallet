@@ -1,11 +1,12 @@
-# Rust Wallet Template
-Use this template to help you scaffold a new Rust Wallet application.
+# EVM Wallet Template
+Use this template written in Rust to help you scaffold a new EVM-Compatible Wallet application.
 Note that no user management is available with this template, only a single wallet.
 
 ## Usage
-This Rust Wallet application allows users to leverage confidential computing to create a wallet 
+This EVM Wallet application allows users to leverage confidential computing to create a wallet 
 with a single non-extractable private key. It can be used to interact with any number of ethereum-based blockchains, all using that same private key/wallet.
 On-chain transactions can be performed, however cross-chain transactions are not available here.
+It also provides a possibility to deploy a solidity contract and call some limited routes like mint and burn for a contract inheriting the ERC20 contract specification.
 
 ## Prerequisites
 To use and build this template the following tools must be installed:
