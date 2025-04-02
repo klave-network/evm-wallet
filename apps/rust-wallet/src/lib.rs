@@ -48,6 +48,7 @@ impl Guest for Component {
         klave::router::add_user_query("wallet_networks");
         klave::router::add_user_query("wallet_transfer");    
         klave::router::add_user_query("wallet_deploy_contract");
+        klave::router::add_user_query("wallet_call_contract");
     }
     
     fn network_add(cmd: String){
@@ -603,7 +604,172 @@ impl Guest for Component {
             Ok(result) => klave::notifier::send_string(&result),
             Err(e) => klave::notifier::send_string(&format!("ERROR: failed to send balance: {}", e))
         }
-    }    
+    }   
+
+    fn wallet_call_contract(cmd: String) {
+        let Ok(v) = serde_json::from_str::<Value>(&cmd) else {
+            klave::notifier::send_string(&format!("ERROR: failed to parse '{}' as json", cmd));
+            return;
+        };
+
+        let contract_owner_address = match v["contract_owner_address"].as_str() {
+            Some(c) => match c.parse::<Address>() {
+                Ok(a) => a,
+                Err(e) => {
+                    klave::notifier::send_string(&format!("ERROR: failed to parse contract owner address: {}", e));
+                    return;
+                }
+            },
+            None => {
+                klave::notifier::send_string(&format!("ERROR: contract owner address not found"));
+                return;
+            }
+        };
+
+        let contract_address = match v["contract_address"].as_str() {
+            Some(c) => match c.parse::<Address>() {
+                Ok(a) => a,
+                Err(e) => {
+                    klave::notifier::send_string(&format!("ERROR: failed to parse contract address: {}", e));
+                    return;
+                }
+            },
+            None => {
+                klave::notifier::send_string(&format!("ERROR: contract address not found"));
+                return;
+            }
+        };
+
+        let recipient_address = match v["recipient_address"].as_str() {
+            Some(c) => match c.parse::<Address>() {
+                Ok(a) => a,
+                Err(e) => {
+                    klave::notifier::send_string(&format!("ERROR: failed to parse recipient address: {}", e));
+                    return;
+                }
+            },
+            None => {
+                klave::notifier::send_string(&format!("ERROR: recipient address not found"));
+                return;
+            }
+        };
+        let value = match v["value"].as_str() {
+            Some(c) => {
+                match U256::from_str_radix(c.trim_start_matches("0x"), 16) {
+                    Ok(v) => v,
+                    Err(e) => {
+                        klave::notifier::send_string(&format!("ERROR: failed to parse value: {}", e));
+                        return;
+                    }
+                }
+            },
+            None => {
+                klave::notifier::send_string(&format!("ERROR: value not found"));
+                return;
+            }
+        };
+        let mut hex_encoded_call = String::new();
+        match v["input"].as_str() {
+            Some(d) => {
+                match d {
+                    "mint" => {
+                            hex_encoded_call = hex::encode(mintCall::new((recipient_address, value)).abi_encode());                            
+                        },
+                    "burn" => {
+                            hex_encoded_call = hex::encode(burnCall::new((recipient_address, value)).abi_encode());                            
+                        },
+                    _ => {
+                        klave::notifier::send_string(&format!("ERROR: unsupported function call"));
+                        return;
+                    }
+                }
+            },
+            None => {}
+        };    
+        
+        let chain_id = match v["chainId"].as_u64() {
+            Some(c) => c,
+            None => {
+                klave::notifier::send_string(&format!("ERROR: chainId not found"));
+                return;
+            }
+        };
+        let nonce = match v["nonce"].as_u64() {
+            Some(n) => n,
+            None => {
+                klave::notifier::send_string(&format!("ERROR: nonce not found"));
+                return;
+            }
+        };
+        let gas_limit = match v["gasLimit"].as_u64(){
+            Some(g) => g,
+            None => {
+                klave::notifier::send_string(&format!("ERROR: gasLimit not found"));
+                return;
+            }
+        };
+        let max_fee_per_gas = match v["maxFeePerGas"].as_u64() {
+            Some(m) => m,
+            None => {
+                klave::notifier::send_string(&format!("ERROR: maxFeePerGas not found"));
+                return;
+            }
+        };
+        let max_priority_fee_per_gas = match v["maxPriorityFeePerGas"].as_u64() {
+            Some(m) => m,
+            None => {
+                klave::notifier::send_string(&format!("ERROR: maxPriorityFeePerGas not found"));
+                return;
+            }
+        };
+    
+        let tx = TxEip1559 {
+            chain_id: chain_id,
+            nonce: nonce,
+            gas_limit: gas_limit,
+            to: TxKind::Call(contract_address),
+            value: U256::default(),
+            input: hex::decode(hex_encoded_call).unwrap().into(),
+            max_fee_per_gas: max_fee_per_gas as u128,
+            max_priority_fee_per_gas: max_priority_fee_per_gas as u128,
+            ..Default::default()
+        };
+
+        let network_name = match v["network_name"].as_str() {
+            Some(c) => c,
+            None => {
+                klave::notifier::send_string(&format!("ERROR: network not found"));
+                return;
+            }
+        };
+        let mut wallet = match Wallet::load(&contract_owner_address.to_string()) {
+            Ok(w) => w,
+            Err(e) => {
+                klave::notifier::send_string(&format!("ERROR: failed to load wallet: {}", e));
+                return;
+            }
+        };
+
+        let nm = match Networks::load() {
+            Ok(nm) => nm,
+            Err(e) => {
+                klave::notifier::send_string(&format!("ERROR: failed to load network manager: {}. Create one first.", e));                
+                return
+            }
+        };
+
+        let trace = match v["trace"].as_bool() {
+            Some(c) => c,
+            None => false
+        };
+
+        match wallet.sign_and_send(&nm, network_name, tx.clone(), trace) {
+            Ok(result) => {
+                klave::notifier::send_string(&format!("{}", result))
+            },
+            Err(e) => klave::notifier::send_string(&format!("ERROR: failed to send transaction: {}", e))
+        }        
+    }
 }
 
 bindings::export!(Component with_types_in bindings);

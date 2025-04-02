@@ -15,4 +15,5 @@ world rust-wallet {
     export wallet-networks: func(cmd: string);
     export wallet-transfer: func(cmd: string); 
     export wallet-deploy-contract: func(cmd: string);   
+    export wallet-call-contract: func(cmd: string);
 }

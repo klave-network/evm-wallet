@@ -30,14 +30,20 @@ You can see these methods exposed in the `wit` [interface](https://github.com/kl
 - `export wallet-networks: func(cmd: string);`
 - `export wallet-transfer: func(cmd: string); `
 - `export wallet-deploy-contract: func(cmd: string);`
+- `export wallet-call-contract: func(cmd: string);`
 
-## klave-networks Crate
+## klave-networks folder
 A local crate is available to handle all network features needed:
 - multiple networks
 - HTTP request formatting for 
   - JSON-RPC transactions/queries
   - authentication. 
 Are currently supported public and private ethereum-based blockchains.
+
+## solidity contracts
+The CrossChainToken.sol contract is only available as an example of contract that is deployed and called as part of the rust-wallet.
+In the background, Hardhat was used to test the contract and the bytecode was generated using the typescript solc.compile command.
+In this particular example, only mint and burn methods can be called.
 
 ## Deploy Your App on Klave
 [![Deploy on Klave](https://klave.com/images/deploy-on-klave.svg)](https://app.klave.com/login)
