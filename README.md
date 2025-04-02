@@ -14,6 +14,11 @@ To use and build this template the following tools must be installed:
 - Cargo component : `cargo install cargo-component`
 - `wasm32-unknown-unknown` target : `rustup target add wasm32-unknown-unknown`
 
+## Rust Libraries used
+In this template, the following libraries are leveraged:
+- alloy (https://crates.io/crates/alloy)
+- http (https://crates.io/crates/http)
+
 ## Wasm component
 Klave apps are `wasm component`.
 In this template, three methods are implemented, registered and exposed: 
